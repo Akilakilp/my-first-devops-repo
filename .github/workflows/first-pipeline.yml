@@ -1,0 +1,30 @@
+name: My First CI Pipeline
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Print hello
+        run: echo "Pipeline is running! 🚀"
+
+      - name: Show repo files
+        run: ls -la
+
+      - name: Show system info
+        run: |
+          echo "OS: $(uname -s)"
+          echo "Date: $(date)"
+          echo "User: $(whoami)"
+
+      - name: Run health check script
+        run: bash scripts/health-check.sh
