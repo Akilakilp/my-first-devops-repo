@@ -12,19 +12,39 @@ jobs:
 
     steps:
       - name: Checkout code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
-      - name: Print hello
-        run: echo "Pipeline is running! 🚀"
+      - name: Show system info
+        run: |
+          echo "=============================="
+          echo "  CI Pipeline Running!"
+          echo "=============================="
+          echo "OS: $(uname -s)"
+          echo "Date: $(date)"
+          echo "Branch: $GITHUB_REF_NAME"
+          echo "Commit: $GITHUB_SHA"
+          echo "Triggered by: $GITHUB_ACTOR"
+          echo "=============================="
 
       - name: Show repo files
         run: ls -la
 
-      - name: Show system info
-        run: |
-          echo "OS: $(uname -s)"
-          echo "Date: $(date)"
-          echo "User: $(whoami)"
-
       - name: Run health check script
         run: bash scripts/health-check.sh
+
+      - name: Check for sensitive files
+        run: |
+          echo "Checking for sensitive files..."
+          if find . -name "*.env" -o -name "*.pem" -o -name "*.key" | grep -q .; then
+            echo "❌ Sensitive files found!"
+            exit 1
+          else
+            echo "✅ No sensitive files found!"
+          fi
+
+      - name: Pipeline success
+        run: |
+          echo "=============================="
+          echo "  ✅ All checks passed!"
+          echo "  🚀 Ready to deploy!"
+          echo "=============================="
